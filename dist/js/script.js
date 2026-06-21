@@ -5,7 +5,7 @@
 
   const select = {
     templateOf: {
-      menuProduct: "#template-menu-product",
+      menuProduct: '#template-menu-product',
     },
     containerOf: {
       menu: '#product-list',
@@ -52,6 +52,28 @@
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
   };
 
+  class AmountWidget {
+    constructor(element) {
+      const thisWidget = this;
+
+      // KROK 1: Wywołanie getElements w konstruktorze z przekazaniem argumentu element
+      thisWidget.getElements(element);
+
+      console.log('AmountWidget:', thisWidget);
+      console.log('constructor arguments:', element);
+    }
+
+    // KROK 2: Dodanie nowej metody getElements szukającej kontrolek wewnątrz otrzymanego diva
+    getElements(element){
+      const thisWidget = this;
+
+      thisWidget.element = element;
+      thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
+      thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
+      thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+    }
+  }
+
   class Product {
     constructor(id, data){
       const thisProduct = this;
@@ -63,6 +85,7 @@
       thisProduct.getElements();
       thisProduct.initAccordion();
       thisProduct.initOrderForm();
+      thisProduct.initAmountWidget();
       thisProduct.processOrder();
 
       console.log('new Product:', thisProduct);
@@ -84,7 +107,6 @@
       menuContainer.appendChild(thisProduct.element);
     }
 
-    // ZMIANA: Dodana referencja do imageWrapper zgodnie z planem
     getElements(){
       const thisProduct = this;
 
@@ -94,6 +116,7 @@
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
       thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
+      thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
     }
 
     initAccordion(){
@@ -138,51 +161,41 @@
       });
     }
 
-    // ZMIANA: Pełne i oczyszczone wdrożenie logiki obrazków i cen w processOrder
+    initAmountWidget() {
+      const thisProduct = this;
+
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+    }
+
     processOrder() {
       const thisProduct = this;
 
-      // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
       console.log('formData', formData);
 
-      // set price to default price
       let price = thisProduct.data.price;
 
-      // Bezpiecznik: wykonaj pętle tylko jeśli produkt posiada jakiekolwiek parametry
       if (thisProduct.data.params) {
-        // for every category (param)...
         for(let paramId in thisProduct.data.params) {
           const param = thisProduct.data.params[paramId];
 
-          // for every option in this category
           for(let optionId in param.options) {
             const option = param.options[optionId];
-
-            // REFAKTORYZACJA: Wyciągnięcie dłuższego warunku do jednej stałej
             const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
 
             if(optionSelected) {
-              // check if the option is not default
               if(!option.default) {
-                // add option price to price variable
                 price += option.price;
               }
             } else {
-              // check if the option is default
               if(option.default) {
-                // reduce price variable
                 price -= option.price;
               }
             }
 
-            // WDROŻENIE: Logika obsługi obrazków z wykorzystaniem podpowiedzi
-            // 1. Znalezienie obrazka o klasie .paramId-optionId w divie z obrazkami
             const optionImage = thisProduct.imageWrapper ? thisProduct.imageWrapper.querySelector(`.${paramId}-${optionId}`) : null;
 
-            // 2. Sprawdzenie, czy udało się go znaleźć
             if(optionImage) {
-              // 3. Jeśli się udało, sprawdzenie czy dana opcja jest zaznaczona
               if(optionSelected) {
                 optionImage.classList.add(classNames.menuProduct.imageVisible);
               } else {
@@ -222,7 +235,7 @@
       console.log('settings:', settings);
       console.log('templates:', templates);
 
-      thisApp.data = dataSource;
+      thisApp.initData();
       thisApp.initMenu();
     },
   };
