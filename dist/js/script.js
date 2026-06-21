@@ -57,8 +57,6 @@
       const thisWidget = this;
 
       thisWidget.getElements(element);
-      
-      // KROK 2: Wywołanie setValue w konstruktorze, przekazując wartość startową z inputu HTML
       thisWidget.setValue(thisWidget.input.value);
 
       console.log('AmountWidget:', thisWidget);
@@ -74,14 +72,17 @@
       thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
     }
 
-    // KROK 1: Dodanie metody pośrednika setValue pod getElements
     setValue(value) {
       const thisWidget = this;
 
       const newValue = parseInt(value);
 
       /* TODO: Add validation */
-      thisWidget.value = newValue;
+      // Zgodnie z wytycznymi: wartość musi być inna od obecnej oraz musi być poprawną liczbą
+      if (thisWidget.value !== newValue && !isNaN(newValue)) {
+        thisWidget.value = newValue;
+      }
+
       thisWidget.input.value = thisWidget.value;
     }
   }
@@ -247,7 +248,7 @@
       console.log('settings:', settings);
       console.log('templates:', templates);
 
-      thisApp.data = dataSource;
+      thisApp.initData();
       thisApp.initMenu();
     },
   };
