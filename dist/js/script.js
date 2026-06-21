@@ -58,7 +58,6 @@
 
       thisWidget.getElements(element);
       thisWidget.setValue(thisWidget.input.value);
-      // KROK 2: Automatyczne uruchomienie nasłuchiwaczy po utworzeniu instancji
       thisWidget.initActions();
 
       console.log('AmountWidget:', thisWidget);
@@ -80,29 +79,31 @@
       const newValue = parseInt(value);
 
       /* TODO: Add validation */
-      if (thisWidget.value !== newValue && !isNaN(newValue)) {
+      // ROZBUDOWA WARUNKU: sprawdzamy zmianę wartości, poprawność liczby ORAZ zakres min/max z ustawień
+      if (
+        thisWidget.value !== newValue && 
+        !isNaN(newValue) && 
+        newValue >= settings.amountWidget.defaultMin && 
+        newValue <= settings.amountWidget.defaultMax
+      ) {
         thisWidget.value = newValue;
       }
 
       thisWidget.input.value = thisWidget.value;
     }
 
-    // KROK 1: Dodanie metody initActions z trzema listenerami eventów
     initActions() {
       const thisWidget = this;
 
-      // Nasłuchiwacz na zmianę wartości w polu input (ręczne wpisanie tekst/liczba)
       thisWidget.input.addEventListener('change', function() {
         thisWidget.setValue(thisWidget.input.value);
       });
 
-      // Nasłuchiwacz na kliknięcie przycisku minus (-)
       thisWidget.linkDecrease.addEventListener('click', function(event) {
         event.preventDefault();
         thisWidget.setValue(thisWidget.value - 1);
       });
 
-      // Nasłuchiwacz na kliknięcie przycisku plus (+)
       thisWidget.linkIncrease.addEventListener('click', function(event) {
         event.preventDefault();
         thisWidget.setValue(thisWidget.value + 1);
@@ -271,7 +272,7 @@
       console.log('settings:', settings);
       console.log('templates:', templates);
 
-      thisApp.data = dataSource;
+      thisApp.initData();
       thisApp.initMenu();
     },
   };
