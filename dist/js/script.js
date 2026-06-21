@@ -58,6 +58,8 @@
 
       thisWidget.getElements(element);
       thisWidget.setValue(thisWidget.input.value);
+      // KROK 2: Automatyczne uruchomienie nasłuchiwaczy po utworzeniu instancji
+      thisWidget.initActions();
 
       console.log('AmountWidget:', thisWidget);
       console.log('constructor arguments:', element);
@@ -78,12 +80,33 @@
       const newValue = parseInt(value);
 
       /* TODO: Add validation */
-      // Zgodnie z wytycznymi: wartość musi być inna od obecnej oraz musi być poprawną liczbą
       if (thisWidget.value !== newValue && !isNaN(newValue)) {
         thisWidget.value = newValue;
       }
 
       thisWidget.input.value = thisWidget.value;
+    }
+
+    // KROK 1: Dodanie metody initActions z trzema listenerami eventów
+    initActions() {
+      const thisWidget = this;
+
+      // Nasłuchiwacz na zmianę wartości w polu input (ręczne wpisanie tekst/liczba)
+      thisWidget.input.addEventListener('change', function() {
+        thisWidget.setValue(thisWidget.input.value);
+      });
+
+      // Nasłuchiwacz na kliknięcie przycisku minus (-)
+      thisWidget.linkDecrease.addEventListener('click', function(event) {
+        event.preventDefault();
+        thisWidget.setValue(thisWidget.value - 1);
+      });
+
+      // Nasłuchiwacz na kliknięcie przycisku plus (+)
+      thisWidget.linkIncrease.addEventListener('click', function(event) {
+        event.preventDefault();
+        thisWidget.setValue(thisWidget.value + 1);
+      });
     }
   }
 
@@ -248,7 +271,7 @@
       console.log('settings:', settings);
       console.log('templates:', templates);
 
-      thisApp.initData();
+      thisApp.data = dataSource;
       thisApp.initMenu();
     },
   };
