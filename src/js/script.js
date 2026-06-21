@@ -56,14 +56,15 @@
     constructor(element) {
       const thisWidget = this;
 
-      // KROK 1: Wywołanie getElements w konstruktorze z przekazaniem argumentu element
       thisWidget.getElements(element);
+      
+      // KROK 2: Wywołanie setValue w konstruktorze, przekazując wartość startową z inputu HTML
+      thisWidget.setValue(thisWidget.input.value);
 
       console.log('AmountWidget:', thisWidget);
       console.log('constructor arguments:', element);
     }
 
-    // KROK 2: Dodanie nowej metody getElements szukającej kontrolek wewnątrz otrzymanego diva
     getElements(element){
       const thisWidget = this;
 
@@ -71,6 +72,17 @@
       thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
       thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
       thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+    }
+
+    // KROK 1: Dodanie metody pośrednika setValue pod getElements
+    setValue(value) {
+      const thisWidget = this;
+
+      const newValue = parseInt(value);
+
+      /* TODO: Add validation */
+      thisWidget.value = newValue;
+      thisWidget.input.value = thisWidget.value;
     }
   }
 
@@ -235,7 +247,7 @@
       console.log('settings:', settings);
       console.log('templates:', templates);
 
-      thisApp.initData();
+      thisApp.data = dataSource;
       thisApp.initMenu();
     },
   };
