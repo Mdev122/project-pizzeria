@@ -43,21 +43,23 @@
   const settings = {
     amountWidget: {
       defaultValue: 1,
-      defaultMin: 1, // <--- Tutaj zablokowaliśmy spadek poniżej 1
+      defaultMin: 1, 
       defaultMax: 10,
     }
   };
 
-  const templates = {
-    menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
-  };
+  // Bezpieczny, pusty obiekt szablonów - zostanie uzupełniony w metodzie app.init()
+  const templates = {};
 
   class AmountWidget {
     constructor(element) {
       const thisWidget = this;
 
       thisWidget.getElements(element);
-      thisWidget.setValue(thisWidget.input.value);
+      
+      // Bezpieczna walidacja wartości startowej – bierzemy settings, jeśli input nie ma przypisanego value
+      thisWidget.setValue(thisWidget.input && thisWidget.input.value ? thisWidget.input.value : settings.amountWidget.defaultValue);
+      
       thisWidget.initActions();
 
       console.log('AmountWidget:', thisWidget);
@@ -88,25 +90,33 @@
         thisWidget.announce();
       }
 
-      thisWidget.input.value = thisWidget.value;
+      if (thisWidget.input) {
+        thisWidget.input.value = thisWidget.value;
+      }
     }
 
     initActions() {
       const thisWidget = this;
 
-      thisWidget.input.addEventListener('change', function() {
-        thisWidget.setValue(thisWidget.input.value);
-      });
+      if (thisWidget.input) {
+        thisWidget.input.addEventListener('change', function() {
+          thisWidget.setValue(thisWidget.input.value);
+        });
+      }
 
-      thisWidget.linkDecrease.addEventListener('click', function(event) {
-        event.preventDefault();
-        thisWidget.setValue(thisWidget.value - 1);
-      });
+      if (thisWidget.linkDecrease) {
+        thisWidget.linkDecrease.addEventListener('click', function(event) {
+          event.preventDefault();
+          thisWidget.setValue(thisWidget.value - 1);
+        });
+      }
 
-      thisWidget.linkIncrease.addEventListener('click', function(event) {
-        event.preventDefault();
-        thisWidget.setValue(thisWidget.value + 1);
-      });
+      if (thisWidget.linkIncrease) {
+        thisWidget.linkIncrease.addEventListener('click', function(event) {
+          event.preventDefault();
+          thisWidget.setValue(thisWidget.value + 1);
+        });
+      }
     }
 
     announce() {
@@ -212,7 +222,6 @@
 
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
 
-      // Słuchamy eventu 'updated' wysłanego z widgetu i przeliczamy cenę
       thisProduct.amountWidgetElem.addEventListener('updated', function() {
         thisProduct.processOrder();
       });
@@ -287,6 +296,9 @@
       console.log('thisApp:', thisApp);
       console.log('classNames:', classNames);
       console.log('settings:', settings);
+
+      // KROK NAPRAWCZY: Kompilacja szablonu odbywa się tutaj, czyli dopiero gdy DOM i Handlebars są w 100% wczytane
+      templates.menuProduct = Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML);
 
       thisApp.initData();
       thisApp.initMenu();

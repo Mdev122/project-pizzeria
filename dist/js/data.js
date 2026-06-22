@@ -106,10 +106,9 @@ dataSource.products = {
           feta: {label: 'Feta cheese', price: 1},
           cheese: {label: 'Cheese', price: 1},
           herbs: {label: 'Fresh herbs', price: 1, default: true},
-          pepper: {label: 'Black pepper', price: 1},
-        },
-      },
-    },
-  },
-
+          pepper: {label: 'Black pepper', price: 1}
+        }
+      }
+    }
+  }
 };
