@@ -43,7 +43,7 @@
   const settings = {
     amountWidget: {
       defaultValue: 1,
-      defaultMin: 0,
+      defaultMin: 1, // <--- Tutaj zablokowaliśmy spadek poniżej 1
       defaultMax: 10,
     }
   };
@@ -85,7 +85,7 @@
         newValue <= settings.amountWidget.defaultMax
       ) {
         thisWidget.value = newValue;
-        thisWidget.announce(); // <--- Informujemy produkt o poprawnej zmianie wartości [1]
+        thisWidget.announce();
       }
 
       thisWidget.input.value = thisWidget.value;
@@ -112,7 +112,6 @@
     announce() {
       const thisWidget = this;
 
-      // Tworzymy customowy event bąbelkujący w górę drzewa DOM [1]
       const event = new Event('updated', {
         bubbles: true
       });
@@ -213,7 +212,7 @@
 
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
 
-      // Słuchamy eventu 'updated' wysłanego z widgetu i przeliczamy cenę [1]
+      // Słuchamy eventu 'updated' wysłanego z widgetu i przeliczamy cenę
       thisProduct.amountWidgetElem.addEventListener('updated', function() {
         thisProduct.processOrder();
       });
@@ -258,6 +257,9 @@
           }
         }
       }
+
+      /* multiply price by amount */
+      price *= thisProduct.amountWidget.value;
 
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
