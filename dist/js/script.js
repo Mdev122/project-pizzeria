@@ -78,8 +78,6 @@
 
       const newValue = parseInt(value);
 
-      /* TODO: Add validation */
-      // ROZBUDOWA WARUNKU: sprawdzamy zmianę wartości, poprawność liczby ORAZ zakres min/max z ustawień
       if (
         thisWidget.value !== newValue && 
         !isNaN(newValue) && 
@@ -87,6 +85,7 @@
         newValue <= settings.amountWidget.defaultMax
       ) {
         thisWidget.value = newValue;
+        thisWidget.announce(); // <--- Informujemy produkt o poprawnej zmianie wartości [1]
       }
 
       thisWidget.input.value = thisWidget.value;
@@ -108,6 +107,17 @@
         event.preventDefault();
         thisWidget.setValue(thisWidget.value + 1);
       });
+    }
+
+    announce() {
+      const thisWidget = this;
+
+      // Tworzymy customowy event bąbelkujący w górę drzewa DOM [1]
+      const event = new Event('updated', {
+        bubbles: true
+      });
+      
+      thisWidget.element.dispatchEvent(event);
     }
   }
 
@@ -202,6 +212,11 @@
       const thisProduct = this;
 
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+
+      // Słuchamy eventu 'updated' wysłanego z widgetu i przeliczamy cenę [1]
+      thisProduct.amountWidgetElem.addEventListener('updated', function() {
+        thisProduct.processOrder();
+      });
     }
 
     processOrder() {
@@ -270,11 +285,10 @@
       console.log('thisApp:', thisApp);
       console.log('classNames:', classNames);
       console.log('settings:', settings);
-      console.log('templates:', templates);
 
       thisApp.initData();
       thisApp.initMenu();
-    },
+    }
   };
 
   app.init();
