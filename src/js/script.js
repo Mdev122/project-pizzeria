@@ -96,9 +96,6 @@
       thisWidget.setValue(thisWidget.input && thisWidget.input.value ? thisWidget.input.value : settings.amountWidget.defaultValue);
       
       thisWidget.initActions();
-
-      console.log('AmountWidget:', thisWidget);
-      console.log('constructor arguments:', element);
     }
 
     getElements(element){
@@ -178,8 +175,6 @@
       thisProduct.initOrderForm();
       thisProduct.initAmountWidget();
       thisProduct.processOrder();
-
-      console.log('new Product:', thisProduct);
     }
 
     renderInMenu(){
@@ -235,7 +230,6 @@
 
     initOrderForm(){
       const thisProduct = this;
-      console.log('method initOrderForm:', thisProduct.id);
 
       thisProduct.dom.form.addEventListener('submit', function(event){
         event.preventDefault();
@@ -269,7 +263,6 @@
       const thisProduct = this;
 
       const formData = utils.serializeFormToObject(thisProduct.dom.form);
-      console.log('formData', formData);
 
       let price = thisProduct.data.price;
 
@@ -375,8 +368,6 @@
 
       thisCart.getElements(element);
       thisCart.initActions();
-
-      console.log('new Cart', thisCart);
     }
 
     getElements(element){
@@ -387,6 +378,10 @@
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
       thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
+      thisCart.dom.deliveryFee = thisCart.dom.wrapper.querySelector(select.cart.deliveryFee);
+      thisCart.dom.subtotalPrice = thisCart.dom.wrapper.querySelector(select.cart.subtotalPrice);
+      thisCart.dom.totalPrice = thisCart.dom.wrapper.querySelectorAll(select.cart.totalPrice);
+      thisCart.dom.totalNumber = thisCart.dom.wrapper.querySelector(select.cart.totalNumber);
     }
 
     initActions(){
@@ -400,8 +395,6 @@
     add(menuProduct){
       const thisCart = this;
 
-      console.log('adding product', menuProduct);
-
       /* generate HTML based on template */
       const generatedHTML = templates.cartProduct(menuProduct);
 
@@ -412,7 +405,35 @@
       thisCart.dom.productList.appendChild(generatedDOM);
 
       thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
-      console.log('thisCart.products', thisCart.products);
+
+      thisCart.update();
+    }
+
+    update(){
+      const thisCart = this;
+
+      const deliveryFee = settings.cart.defaultDeliveryFee;
+      let totalNumber = 0;
+      let subtotalPrice = 0;
+
+      for(let product of thisCart.products){
+        totalNumber += product.amount;
+        subtotalPrice += product.price;
+      }
+
+      if(totalNumber > 0){
+        thisCart.totalPrice = subtotalPrice + deliveryFee;
+      } else {
+        thisCart.totalPrice = 0;
+      }
+
+      thisCart.dom.totalNumber.innerHTML = totalNumber;
+      thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
+      thisCart.dom.deliveryFee.innerHTML = totalNumber > 0 ? deliveryFee : 0;
+
+      for(let totalPriceElem of thisCart.dom.totalPrice){
+        totalPriceElem.innerHTML = thisCart.totalPrice;
+      }
     }
   }
 
@@ -429,8 +450,6 @@
 
       thisCartProduct.getElements(element);
       thisCartProduct.initAmountWidget();
-
-      console.log('new CartProduct', thisCartProduct);
     }
 
     getElements(element){
@@ -462,7 +481,6 @@
   const app = {
     initMenu: function(){
       const thisApp = this;
-      console.log('thisApp.data:', thisApp.data);
 
       for(let productData in thisApp.data.products){
         new Product(productData, thisApp.data.products[productData]);
@@ -484,11 +502,6 @@
 
     init: function(){
       const thisApp = this;
-      console.log('*** App starting ***');
-      console.log('thisApp:', thisApp);
-      console.log('classNames:', classNames);
-      console.log('settings:', settings);
-      console.log('templates:', templates);
 
       thisApp.initData();
       thisApp.initMenu();
