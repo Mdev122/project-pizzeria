@@ -1,7 +1,6 @@
-/* global select, settings */
-'use strict';
+import { select, settings } from '../settings.js';
 
-class AmountWidget { // eslint-disable-line no-unused-vars
+export class AmountWidget {
   constructor(element) {
     const thisWidget = this;
 

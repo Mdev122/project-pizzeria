@@ -1,7 +1,4 @@
-/* global Handlebars */
-'use strict';
-
-const select = {
+export const select = {
   templateOf: {
     menuProduct: '#template-menu-product',
     cartProduct: '#template-cart-product',
@@ -50,7 +47,7 @@ const select = {
   },
 };
 
-const classNames = { // eslint-disable-line no-unused-vars
+export const classNames = {
   menuProduct: {
     wrapperActive: 'active',
     imageVisible: 'active',
@@ -60,7 +57,7 @@ const classNames = { // eslint-disable-line no-unused-vars
   },
 };
 
-const settings = { // eslint-disable-line no-unused-vars
+export const settings = {
   amountWidget: {
     defaultValue: 1,
     defaultMin: 1,
@@ -76,7 +73,7 @@ const settings = { // eslint-disable-line no-unused-vars
   },
 };
 
-const templates = { // eslint-disable-line no-unused-vars
+export const templates = {
   menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
   cartProduct: Handlebars.compile(document.querySelector(select.templateOf.cartProduct).innerHTML),
 };

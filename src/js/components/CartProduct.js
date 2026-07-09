@@ -1,7 +1,7 @@
-/* global select, AmountWidget */
-'use strict';
+import { select } from '../settings.js';
+import { AmountWidget } from './AmountWidget.js';
 
-class CartProduct{ // eslint-disable-line no-unused-vars
+export class CartProduct {
   constructor(menuProduct, element){
     const thisCartProduct = this;
 

@@ -1,7 +1,8 @@
-/* global select, classNames, settings, templates, utils, CartProduct */
-'use strict';
+import { select, classNames, settings, templates } from '../settings.js';
+import utils from '../utils.js';
+import { CartProduct } from './CartProduct.js';
 
-class Cart{ // eslint-disable-line no-unused-vars
+export class Cart {
   constructor(element){
     const thisCart = this;
 
@@ -52,13 +53,10 @@ class Cart{ // eslint-disable-line no-unused-vars
   add(menuProduct){
     const thisCart = this;
 
-    /* generate HTML based on template */
     const generatedHTML = templates.cartProduct(menuProduct);
 
-    /* create element using utils.createDOMFromHTML */
     const generatedDOM = utils.createDOMFromHTML(generatedHTML);
 
-    /* add element to cart product list */
     thisCart.dom.productList.appendChild(generatedDOM);
 
     thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
@@ -97,14 +95,11 @@ class Cart{ // eslint-disable-line no-unused-vars
   remove(cartProduct){
     const thisCart = this;
 
-    /* remove DOM element */
     cartProduct.dom.wrapper.remove();
 
-    /* remove from thisCart.products */
     const index = thisCart.products.indexOf(cartProduct);
     thisCart.products.splice(index, 1);
 
-    /* update cart totals */
     thisCart.update();
   }
 
