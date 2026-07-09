@@ -73,6 +73,9 @@ export const app = {
   activatePage: function(pageId){
     const thisApp = this;
 
+    /* update address bar to reflect the current page */
+    window.location.hash = '#' + pageId;
+
     /* add class active to matching pages, remove from non-matching */
     for(let page of thisApp.pages){
       page.classList.toggle(classNames.pages.active, page.id == pageId);
