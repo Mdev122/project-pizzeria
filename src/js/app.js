@@ -2,6 +2,7 @@ import { select, settings, classNames } from './settings.js';
 import { Product } from './components/Product.js';
 import { Cart } from './components/Cart.js';
 import { Booking } from './components/Booking.js';
+import { Home } from './components/Home.js';
 
 export const app = {
   initMenu: function(){
@@ -79,6 +80,14 @@ export const app = {
       });
     }
 
+    /* any other link to a page id (e.g. the CTA boxes on the home page)
+       navigates natively, we just react to the resulting hash change */
+    window.addEventListener('hashchange', function(){
+      const id = window.location.hash.replace('#', '');
+
+      thisApp.activatePage(id);
+    });
+
     thisApp.activatePage(pageMatchingHash);
   },
 
@@ -107,12 +116,24 @@ export const app = {
     thisApp.booking = new Booking(bookingContainer);
   },
 
+  initHome: function(){
+    const thisApp = this;
+
+    const homeContainer = document.querySelector(select.containerOf.home);
+
+    thisApp.home = new Home(homeContainer);
+  },
+
   init: function(){
     const thisApp = this;
 
     thisApp.initData();
     thisApp.initCart();
+    /* initPages first so #home already has the .active/display:block class
+       before Home mounts its Glide carousel - Glide can't measure a
+       display:none container correctly */
     thisApp.initPages();
+    thisApp.initHome();
     thisApp.initBooking();
   }
 };
