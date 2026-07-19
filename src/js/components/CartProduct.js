@@ -38,7 +38,7 @@ export class CartProduct {
       thisCartProduct.amount = thisCartProduct.amountWidget.value;
       thisCartProduct.price = thisCartProduct.priceSingle * thisCartProduct.amount;
 
-      thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
+      thisCartProduct.dom.price.innerHTML = thisCartProduct.price.toFixed(2);
     });
   }
 

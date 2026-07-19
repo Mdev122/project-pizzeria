@@ -84,11 +84,11 @@ export class Cart {
     }
 
     thisCart.dom.totalNumber.innerHTML = thisCart.totalNumber;
-    thisCart.dom.subtotalPrice.innerHTML = thisCart.subtotalPrice;
-    thisCart.dom.deliveryFee.innerHTML = thisCart.deliveryFee;
+    thisCart.dom.subtotalPrice.innerHTML = thisCart.subtotalPrice.toFixed(2);
+    thisCart.dom.deliveryFee.innerHTML = thisCart.deliveryFee.toFixed(2);
 
     for(let totalPriceElem of thisCart.dom.totalPrice){
-      totalPriceElem.innerHTML = thisCart.totalPrice;
+      totalPriceElem.innerHTML = thisCart.totalPrice.toFixed(2);
     }
   }
 

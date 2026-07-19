@@ -145,7 +145,7 @@ export class Product {
     price *= thisProduct.amountWidget.value;
 
     // update calculated price in the HTML
-    thisProduct.dom.priceElem.innerHTML = price;
+    thisProduct.dom.priceElem.innerHTML = price.toFixed(2);
   }
 
   prepareCartProductParams(){
