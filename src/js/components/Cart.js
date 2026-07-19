@@ -106,6 +106,11 @@ export class Cart {
   sendOrder(){
     const thisCart = this;
 
+    if(thisCart.products.length === 0){
+      alert('Twój koszyk jest pusty. Dodaj produkt przed złożeniem zamówienia.');
+      return;
+    }
+
     const url = settings.db.url + '/' + settings.db.orders;
 
     const payload = {
@@ -130,6 +135,19 @@ export class Cart {
       body: JSON.stringify(payload),
     };
 
-    fetch(url, options);
+    fetch(url, options)
+      .then(function(response){
+        if(!response.ok){
+          throw new Error('Błąd serwera: ' + response.status);
+        }
+        return response.json();
+      })
+      .then(function(parsedResponse){
+        console.log('parsedResponse', parsedResponse);
+      })
+      .catch(function(error){
+        console.error('Nie udało się wysłać zamówienia:', error);
+        alert('Nie udało się wysłać zamówienia. Sprawdź połączenie z internetem i spróbuj ponownie.');
+      });
   }
 }

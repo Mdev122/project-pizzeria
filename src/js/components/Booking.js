@@ -237,6 +237,11 @@ export class Booking {
   sendBooking(){
     const thisBooking = this;
 
+    if(thisBooking.selectedTable === null){
+      alert('Wybierz stolik przed wysłaniem rezerwacji.');
+      return;
+    }
+
     const url = settings.db.url + '/' + settings.db.bookings;
 
     const payload = {
@@ -266,6 +271,9 @@ export class Booking {
 
     fetch(url, options)
       .then(function(response){
+        if(!response.ok){
+          throw new Error('Błąd serwera: ' + response.status);
+        }
         return response.json();
       })
       .then(function(parsedResponse){
@@ -273,6 +281,10 @@ export class Booking {
 
         thisBooking.makeBooked(parsedResponse.date, parsedResponse.hour, parsedResponse.duration, parsedResponse.table);
         thisBooking.updateDOM();
+      })
+      .catch(function(error){
+        console.error('Nie udało się wysłać rezerwacji:', error);
+        alert('Nie udało się wysłać rezerwacji. Sprawdź połączenie z internetem i spróbuj ponownie.');
       });
   }
 }
