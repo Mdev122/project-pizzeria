@@ -195,6 +195,10 @@
     .home-gallery__overlay {
       opacity: 1;
       background: rgba($color-dark, 0.5);
+
+      i {
+        color: $color-main;
+      }
     }
 
   }
@@ -217,11 +221,6 @@
     color: $color-light;
     font-size: ($base-size * 1.5);
     transition: $transition;
-
-    &:hover {
-      color: $color-main;
-    }
-
   }
 
 }
